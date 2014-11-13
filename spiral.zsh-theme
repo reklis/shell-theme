@@ -32,7 +32,7 @@ function testok {
 }
 
 function currenttime {
-  echo -e "`date +"%X"`"
+  #echo -e "`date +"%X"`"
 }
 
 precmd () {
@@ -43,6 +43,14 @@ precmd () {
 preexec () {
    (( $#_elapsed > 10 )) && set -A _elapsed $_elapsed[-10,-1]
    typeset -ig _start=SECONDS
+}
+
+function elapsedtime() {
+  seconds=${_elapsed[-1]}
+
+  if [[ 0 -ne $seconds ]]; then
+    echo -en " %{$BLUE_BOLD%}${seconds}s%{$RESET_COLOR%}"
+  fi
 }
 
 function gitprompt() {
@@ -87,7 +95,7 @@ function svnprompt() {
 
 # Prompt format
 
-PROMPT='$(testok)$(currenttime) ${_elapsed[-1]}s
+PROMPT='$(testok)$(currenttime)$(elapsedtime)
 %{$GREEN_BOLD%}%{$WHITE%}%{$YELLOW%}${PWD/#$HOME/~}%u%{$RESET_COLOR%}
 %{$BLUE%}${PROMPT_CHARACTER}%{$RESET_COLOR%} '
 
